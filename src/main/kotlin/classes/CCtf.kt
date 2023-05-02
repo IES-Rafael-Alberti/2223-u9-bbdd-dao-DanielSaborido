@@ -84,4 +84,25 @@ class CCtf(private val dataSource: DataSource) : IDataAccess<Ctf> {
             }
         }
     }
+    fun calculaMejoresResultados(participaciones: List<Ctf>): MutableMap<Int, Pair<Int, Ctf>> {
+        val participacionesByCTFId = participaciones.groupBy { it.id }
+        var participacionesByGrupoId = participaciones.groupBy { it.grupoId }
+        val mejoresCtfByGroupId = mutableMapOf<Int, Pair<Int, Ctf>>()
+        participacionesByCTFId.values.forEach { ctfs ->
+            val ctfsOrderByPuntuacion = ctfs.sortedBy { it.puntuacion }.reversed()
+            participacionesByGrupoId.keys.forEach { grupoId ->
+                val posicionNueva = ctfsOrderByPuntuacion.indexOfFirst { it.grupoId == grupoId }
+                if (posicionNueva >= 0) {
+                    val posicionMejor = mejoresCtfByGroupId.getOrDefault(grupoId, null)
+                    if (posicionMejor != null) {
+                        if (posicionNueva < posicionMejor.first)
+                            mejoresCtfByGroupId.set(grupoId, Pair(posicionNueva, ctfsOrderByPuntuacion.get(posicionNueva)))
+                    } else
+                        mejoresCtfByGroupId.set(grupoId, Pair(posicionNueva, ctfsOrderByPuntuacion.get(posicionNueva)))
+
+                }
+            }
+        }
+        return mejoresCtfByGroupId
+    }
 }

@@ -17,7 +17,7 @@ class CGrupo(private val dataSource: DataSource) : IDataAccess<Grupo> {
                 stmt.setString(6, entity.stock.toString())
                 when(stmt.executeUpdate()) {
                     else -> entity
-                }
+                }1
             }
         }
     }
