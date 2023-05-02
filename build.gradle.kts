@@ -14,6 +14,7 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    implementation("com.zaxxer:HikariCP:5.0.1")
 }
 
 tasks.test {

@@ -1,7 +1,8 @@
-data class Ctf(val id: Int, val grupoId: Int, val puntuacion: Int)
-data class Grupo(val grupoid: Int, val mejorCtfId: Int = 0)
+import entities.Ctf
 
-fun main(args: Array<String>) {
+
+
+fun main() {
 
     val participaciones = listOf(Ctf(1, 1, 3), Ctf(1, 2, 101), Ctf(2, 2, 3), Ctf(2, 1, 50), Ctf(2, 3, 1), Ctf(3, 1, 50), Ctf(3, 3, 5))
     val mejoresCtfByGroupId = calculaMejoresResultados(participaciones)
