@@ -6,7 +6,7 @@ import interfaces.IDataAccess
 
 class CCtf(private val dataSource: DataSource) : IDataAccess<Ctf> {
     override fun create(entity: Ctf): Ctf {
-        val sql = "INSERT INTO CTFS (CTFID, GRUPOID, PUNTUACION) VALUES ((SELECT COUNT(CTFID) FROM CTFS) = ?, ?, ?)"
+        val sql = "INSERT INTO CTFS (CTFID, GRUPOID, PUNTUACION) VALUES (?, ?, ?)"
         return dataSource.connection().use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 stmt.setString(1, entity.id.toString())

@@ -18,8 +18,8 @@ fun main() {
     for (participantes in participaciones) {
         CCtf(myDataSource).create(participantes)
     }
-    val mejoresCtfByGroupId = CCtf(myDataSource).calculaMejoresResultados(participaciones)
-    println(mejoresCtfByGroupId)
+    //val mejoresCtfByGroupId = CCtf(myDataSource).calculaMejoresResultados(participaciones)
+    //println(mejoresCtfByGroupId)
 
 }
 
