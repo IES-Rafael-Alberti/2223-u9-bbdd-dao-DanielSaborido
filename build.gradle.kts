@@ -14,7 +14,7 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("com.zaxxer:HikariCP:5.0.1")
+    implementation("com.h2database:h2:2.1.214")
 }
 
 tasks.test {

@@ -1,3 +1,3 @@
 package entities
 
-data class Ctf(val id: Int, val grupoId: Int, val puntuacion: Int)
+data class Ctf(val id: Int = 0, val grupoId: Int, val puntuacion: Int)
