@@ -6,36 +6,28 @@ import interfaces.IDataAccess
 import java.util.*
 class CGrupo(private val dataSource: DataSource) : IDataAccess<Grupo> {
     override fun create(entity: Grupo): Grupo {
-        val sql = "INSERT INTO GRUPOS (id, name, description, price, taxes, stock) VALUES (?, ?, ?, ?, ?, ?)"
+        val sql = "INSERT INTO GRUPOS (GRUPOID, GRUPODESC, MEJORPOSCTFID) VALUES (?, ?, ?)"
         return dataSource.connection().use { conn ->
             conn.prepareStatement(sql).use { stmt ->
-                stmt.setString(1, entity.id.toString())
-                stmt.setString(2, entity.name)
-                stmt.setString(3, entity.description)
-                stmt.setString(4, entity.price.toString())
-                stmt.setString(5, entity.taxes.toString())
-                stmt.setString(6, entity.stock.toString())
+                stmt.setString(1, entity.grupoid.toString())
+                stmt.setString(2, entity.mejorCtfId.toString())
                 when(stmt.executeUpdate()) {
                     else -> entity
-                }1
+                }
             }
         }
     }
 
     override fun getByName(name: String): Grupo? {
-        val sql = "SELECT * FROM GRUPOS WHERE id = ?"
+        val sql = "SELECT * FROM GRUPOS WHERE GRUPOID = ?"
         return dataSource.connection().use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 stmt.setString(1, name)
                 val rs = stmt.executeQuery()
                 if (rs.next()) {
                     Grupo(
-                        id = UUID.fromString(rs.getString("id")),
-                        name = rs.getString("name"),
-                        description = rs.getString("description"),
-                        price = rs.getFloat("price"),
-                        taxes = rs.getInt("taxes"),
-                        stock = rs.getInt("stock")
+                        grupoid = rs.getInt("GRUPOID"),
+                        mejorCtfId = rs.getInt("MEJORPOSCTFID")
                     )
                 } else {
                     null
@@ -53,12 +45,8 @@ class CGrupo(private val dataSource: DataSource) : IDataAccess<Grupo> {
                 while (rs.next()) {
                     products.add(
                         Grupo(
-                            id = UUID.fromString(rs.getString("id")),
-                            name = rs.getString("name"),
-                            description = rs.getString("description"),
-                            price = rs.getFloat("price"),
-                            taxes = rs.getInt("taxes"),
-                            stock = rs.getInt("stock")
+                            grupoid = rs.getInt("GRUPOID"),
+                            mejorCtfId = rs.getInt("MEJORPOSCTFID")
                         )
                     )
                 }
@@ -68,15 +56,11 @@ class CGrupo(private val dataSource: DataSource) : IDataAccess<Grupo> {
     }
 
     override fun update(entity: Grupo): Grupo {
-        val sql = "UPDATE GRUPOS SET name = ?, description = ?, price = ?, taxes = ?, stock = ? WHERE id = ?"
+        val sql = "UPDATE GRUPOS SET GRUPODESC = ?, MEJORPOSCTFID = ? WHERE GRUPOID = ?"
         return dataSource.connection().use { conn ->
             conn.prepareStatement(sql).use { stmt ->
-                stmt.setString(1, entity.stock.toString())
-                stmt.setString(2, entity.taxes.toString())
-                stmt.setString(3, entity.price.toString())
-                stmt.setString(4, entity.description)
-                stmt.setString(5, entity.name)
-                stmt.setString(6, entity.id.toString())
+                stmt.setString(1, entity.grupoid.toString())
+                stmt.setString(2, entity.mejorCtfId.toString())
                 stmt.executeUpdate()
                 entity
             }
@@ -84,20 +68,10 @@ class CGrupo(private val dataSource: DataSource) : IDataAccess<Grupo> {
     }
 
     override fun delete(id: Any) {
-        val sql = "DELETE FROM GRUPOS WHERE id = ?"
+        val sql = "DELETE FROM GRUPOS WHERE GRUPOID = ?"
         dataSource.connection().use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 stmt.setString(1, id.toString())
-                stmt.executeUpdate()
-            }
-        }
-    }
-    fun updateStock(ID: String, STOCK: Int): Int {
-        val sql = "UPDATE GRUPOS SET stock = (stock - ?) WHERE id = ?"
-        return dataSource.connection().use { conn ->
-            conn.prepareStatement(sql).use { stmt ->
-                stmt.setInt(1, STOCK)
-                stmt.setString(2, ID)
                 stmt.executeUpdate()
             }
         }

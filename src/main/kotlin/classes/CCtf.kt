@@ -6,13 +6,12 @@ import interfaces.IDataAccess
 
 class CCtf(private val dataSource: DataSource) : IDataAccess<Ctf> {
     override fun create(entity: Ctf): Ctf {
-        val sql = "INSERT INTO CTFS (dni, name, phone, mail) VALUES (?, ?, ?, ?)"
+        val sql = "INSERT INTO CTFS (CTFID, GRUPOID, PUNTUACION) VALUES (?, ?, ?)"
         return dataSource.connection().use { conn ->
             conn.prepareStatement(sql).use { stmt ->
-                stmt.setString(1, entity.dni)
-                stmt.setString(2, entity.name)
-                stmt.setString(3, entity.phone.toString())
-                stmt.setString(4, entity.mail)
+                stmt.setString(1, entity.id.toString())
+                stmt.setString(2, entity.grupoId.toString())
+                stmt.setString(3, entity.puntuacion.toString())
                 when(stmt.executeUpdate()) {
                     else -> entity
                 }
@@ -21,17 +20,16 @@ class CCtf(private val dataSource: DataSource) : IDataAccess<Ctf> {
     }
 
     override fun getByName(name: String): Ctf? {
-        val sql = "SELECT * FROM CTFS WHERE dni = ?"
+        val sql = "SELECT * FROM CTFS WHERE CTFID = ?"
         return dataSource.connection().use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 stmt.setString(2, name)
                 val rs = stmt.executeQuery()
                 if (rs.next()) {
                     Ctf(
-                        dni = rs.getString("dni"),
-                        name = rs.getString("name"),
-                        phone = rs.getInt("phone"),
-                        mail = rs.getString("mail")
+                        id = rs.getInt("CTFID"),
+                        grupoId = rs.getInt("GRUPOID"),
+                        puntuacion = rs.getInt("PUNTUACION")
                     )
                 } else {
                     null
@@ -49,10 +47,9 @@ class CCtf(private val dataSource: DataSource) : IDataAccess<Ctf> {
                 while (rs.next()) {
                     users.add(
                         Ctf(
-                            dni = rs.getString("dni"),
-                            name = rs.getString("name"),
-                            phone = rs.getInt("phone"),
-                            mail = rs.getString("mail")
+                            id = rs.getInt("CTFID"),
+                            grupoId = rs.getInt("GRUPOID"),
+                            puntuacion = rs.getInt("PUNTUACION")
                         )
                     )
                 }
@@ -62,13 +59,12 @@ class CCtf(private val dataSource: DataSource) : IDataAccess<Ctf> {
     }
 
     override fun update(entity: Ctf): Ctf {
-        val sql = "UPDATE CTFS SET name = ?, phone = ?, mail = ? WHERE dni = ?"
+        val sql = "UPDATE CTFS SET GRUPOID = ?, PUNTUACION = ? WHERE CTFID = ?"
         return dataSource.connection().use { conn ->
             conn.prepareStatement(sql).use { stmt ->
-                stmt.setString(1, entity.mail)
-                stmt.setString(2, entity.phone.toString())
-                stmt.setString(3, entity.name)
-                stmt.setString(4, entity.dni)
+                stmt.setString(1, entity.puntuacion.toString())
+                stmt.setString(2, entity.grupoId.toString())
+                stmt.setString(3, entity.id.toString())
                 stmt.executeUpdate()
                 entity
             }
@@ -76,7 +72,7 @@ class CCtf(private val dataSource: DataSource) : IDataAccess<Ctf> {
     }
 
     override fun delete(id: Any) {
-        val sql = "DELETE FROM CTFS WHERE dni = ?"
+        val sql = "DELETE FROM CTFS WHERE CTFID = ?"
         dataSource.connection().use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 stmt.setString(1, id.toString())
