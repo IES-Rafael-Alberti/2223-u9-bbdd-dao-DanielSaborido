@@ -1,4 +1,5 @@
 import classes.CCtf
+import classes.CGrupo
 import classes.DataSourceImpl
 import entities.Ctf
 
@@ -18,8 +19,8 @@ fun main() {
     for (participantes in participaciones) {
         CCtf(myDataSource).create(participantes)
     }
-    //val mejoresCtfByGroupId = CCtf(myDataSource).calculaMejoresResultados(participaciones)
-    //println(mejoresCtfByGroupId)
+    CGrupo(myDataSource).updatePuntos()
+
 
 }
 

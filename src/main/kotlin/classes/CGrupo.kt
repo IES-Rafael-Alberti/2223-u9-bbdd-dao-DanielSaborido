@@ -1,5 +1,6 @@
 package classes
 
+import entities.Ctf
 import entities.Grupo
 import interfaces.DataSource
 import interfaces.IDataAccess
@@ -18,11 +19,11 @@ class CGrupo(private val dataSource: DataSource) : IDataAccess<Grupo> {
         }
     }
 
-    override fun getByName(name: String): Grupo? {
+    override fun selectById(id: Int): Grupo? {
         val sql = "SELECT * FROM GRUPOS WHERE GRUPOID = ?"
         return dataSource.connection().use { conn ->
             conn.prepareStatement(sql).use { stmt ->
-                stmt.setString(1, name)
+                stmt.setString(1, id.toString())
                 val rs = stmt.executeQuery()
                 if (rs.next()) {
                     Grupo(
@@ -75,5 +76,37 @@ class CGrupo(private val dataSource: DataSource) : IDataAccess<Grupo> {
                 stmt.executeUpdate()
             }
         }
+    }
+    fun updatePuntos() {
+        val ctfs = CCtf(dataSource).getAll()
+        val mejoresResultadosDeGrupos = calculaMejoresResultados(ctfs)
+        mejoresResultadosDeGrupos.values.forEach { mejorResultadoDelGrupo ->
+            var grupo = CGrupo(dataSource).selectById(mejorResultadoDelGrupo.second.grupoId)
+            grupo?.let { elGrupo ->
+                elGrupo.mejorCtfId = mejorResultadoDelGrupo.second.id
+                CGrupo(dataSource).update(elGrupo)
+            }
+        }
+    }
+    fun calculaMejoresResultados(participaciones: List<Ctf>): MutableMap<Int, Pair<Int, Ctf>> {
+        val participacionesByCTFId = participaciones.groupBy { it.id }
+        var participacionesByGrupoId = participaciones.groupBy { it.grupoId }
+        val mejoresCtfByGroupId = mutableMapOf<Int, Pair<Int, Ctf>>()
+        participacionesByCTFId.values.forEach { ctfs ->
+            val ctfsOrderByPuntuacion = ctfs.sortedBy { it.puntuacion }.reversed()
+            participacionesByGrupoId.keys.forEach { grupoId ->
+                val posicionNueva = ctfsOrderByPuntuacion.indexOfFirst { it.grupoId == grupoId }
+                if (posicionNueva >= 0) {
+                    val posicionMejor = mejoresCtfByGroupId.getOrDefault(grupoId, null)
+                    if (posicionMejor != null) {
+                        if (posicionNueva < posicionMejor.first)
+                            mejoresCtfByGroupId.set(grupoId, Pair(posicionNueva, ctfsOrderByPuntuacion.get(posicionNueva)))
+                    } else
+                        mejoresCtfByGroupId.set(grupoId, Pair(posicionNueva, ctfsOrderByPuntuacion.get(posicionNueva)))
+
+                }
+            }
+        }
+        return mejoresCtfByGroupId
     }
 }
