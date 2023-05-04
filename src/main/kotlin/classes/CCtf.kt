@@ -80,4 +80,14 @@ class CCtf(private val dataSource: DataSource) : IDataAccess<Ctf> {
             }
         }
     }
+
+    fun deleteGrupo(id: Int) {
+        val sql = "DELETE FROM CTFS WHERE GRUPOID = ?"
+        dataSource.connection().use { conn ->
+            conn.prepareStatement(sql).use { stmt ->
+                stmt.setString(1, id.toString())
+                stmt.executeUpdate()
+            }
+        }
+    }
 }

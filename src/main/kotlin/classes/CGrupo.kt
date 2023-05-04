@@ -69,6 +69,7 @@ class CGrupo(private val dataSource: DataSource) : IDataAccess<Grupo> {
     }
 
     override fun delete(id: Int) {
+        CCtf(dataSource).deleteGrupo(id)
         val sql = "DELETE FROM GRUPOS WHERE GRUPOID = ?"
         dataSource.connection().use { conn ->
             conn.prepareStatement(sql).use { stmt ->
