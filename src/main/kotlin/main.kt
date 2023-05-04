@@ -5,7 +5,7 @@ import entities.Ctf
 
 
 
-fun main() {
+fun main(args: Array<String>) {
     val myDataSource = DataSourceImpl()
     val participaciones = listOf(
         Ctf(1, 1, 3),
@@ -20,7 +20,6 @@ fun main() {
         CCtf(myDataSource).create(participantes)
     }
     CGrupo(myDataSource).updatePuntos()
-
 
 }
 

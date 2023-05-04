@@ -5,5 +5,5 @@ interface IDataAccess<T> {
     fun getAll(): List<T>
     fun selectById(id: Int): T?
     fun update(entity: T): T
-    fun delete(id: Any)
+    fun delete(id: Int)
 }

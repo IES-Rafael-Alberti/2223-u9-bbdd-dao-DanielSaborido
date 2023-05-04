@@ -71,7 +71,7 @@ class CCtf(private val dataSource: DataSource) : IDataAccess<Ctf> {
         }
     }
 
-    override fun delete(id: Any) {
+    override fun delete(id: Int) {
         val sql = "DELETE FROM CTFS WHERE CTFID = ?"
         dataSource.connection().use { conn ->
             conn.prepareStatement(sql).use { stmt ->

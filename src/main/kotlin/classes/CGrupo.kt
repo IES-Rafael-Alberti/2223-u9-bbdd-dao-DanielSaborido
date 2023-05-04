@@ -68,7 +68,7 @@ class CGrupo(private val dataSource: DataSource) : IDataAccess<Grupo> {
         }
     }
 
-    override fun delete(id: Any) {
+    override fun delete(id: Int) {
         val sql = "DELETE FROM GRUPOS WHERE GRUPOID = ?"
         dataSource.connection().use { conn ->
             conn.prepareStatement(sql).use { stmt ->
@@ -79,11 +79,11 @@ class CGrupo(private val dataSource: DataSource) : IDataAccess<Grupo> {
     }
     fun updatePuntos() {
         val ctfs = CCtf(dataSource).getAll()
-        val mejoresResultadosDeGrupos = calculaMejoresResultados(ctfs)
-        mejoresResultadosDeGrupos.values.forEach { mejorResultadoDelGrupo ->
-            var grupo = CGrupo(dataSource).selectById(mejorResultadoDelGrupo.second.grupoId)
+        val mejoresResultados = calculaMejoresResultados(ctfs)
+        mejoresResultados.values.forEach { mejorResultado ->
+            var grupo = CGrupo(dataSource).selectById(mejorResultado.second.grupoId)
             grupo?.let { elGrupo ->
-                elGrupo.mejorCtfId = mejorResultadoDelGrupo.second.id
+                elGrupo.mejorCtfId = mejorResultado.second.id
                 CGrupo(dataSource).update(elGrupo)
             }
         }
