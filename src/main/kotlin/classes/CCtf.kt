@@ -90,4 +90,15 @@ class CCtf(private val dataSource: DataSource) : IDataAccess<Ctf> {
             }
         }
     }
+
+    fun deleteParticipacion(id: Int, grupo: Int) {
+        val sql = "DELETE FROM CTFS WHERE CTFID = ? AND GRUPOID = ?"
+        dataSource.connection().use { conn ->
+            conn.prepareStatement(sql).use { stmt ->
+                stmt.setString(1, id.toString())
+                stmt.setString(2, grupo.toString())
+                stmt.executeUpdate()
+            }
+        }
+    }
 }

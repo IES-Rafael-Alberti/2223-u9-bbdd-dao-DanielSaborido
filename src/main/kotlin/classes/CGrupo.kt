@@ -42,16 +42,16 @@ class CGrupo(private val dataSource: DataSource) : IDataAccess<Grupo> {
         return dataSource.connection().use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 val rs = stmt.executeQuery()
-                val products = mutableListOf<Grupo>()
+                val grupos = mutableListOf<Grupo>()
                 while (rs.next()) {
-                    products.add(
+                    grupos.add(
                         Grupo(
                             grupoid = rs.getInt("GRUPOID"),
                             mejorCtfId = rs.getInt("MEJORPOSCTFID")
                         )
                     )
                 }
-                products
+                grupos
             }
         }
     }
